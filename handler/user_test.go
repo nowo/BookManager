@@ -62,7 +62,7 @@ func TestCreateUser(t *testing.T) {
 	}
 
 	// Check the response body is what we expect.
-	expected := `User created successfully`
+	expected := `User created successfully break`
 	if rr.Body.String() != expected {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			rr.Body.String(), expected)
