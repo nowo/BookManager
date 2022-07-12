@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Server started at port 8080")
+	fmt.Println("Server started at port: 8080")
 	http.HandleFunc("/get", handler.GetUser)
 	http.HandleFunc("/create", handler.CreateUser)
 	http.ListenAndServe(":8080", nil)
