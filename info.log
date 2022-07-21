@@ -1,0 +1,4 @@
+2022/07/21 09:47:55 Error in decoding the request body, error model: EOF, error code: 80219016
+2022/07/21 09:48:04 Error in decoding the request body, error model: EOF, error code: 80219016
+2022/07/21 09:48:09 GetUser request called when there is no user, error code: 34392714
+2022/07/21 09:52:46 GetUser request called when there is no user, error code: 41233123

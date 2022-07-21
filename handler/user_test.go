@@ -11,7 +11,7 @@ import (
 )
 
 func TestInitialGetUser(t *testing.T) {
-	req, err := http.NewRequest("GET", "/health-check", nil)
+	req, err := http.NewRequest("GET", "/getUsers", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -46,14 +46,13 @@ func TestCreateUser(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	req, err := http.NewRequest("POST", "/create", bytes.NewBuffer(body))
+	req, err := http.NewRequest("POST", "/createUser", bytes.NewBuffer(body))
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(CreateUser)
-
 	handler.ServeHTTP(rr, req)
 
 	if status := rr.Code; status != http.StatusOK {
