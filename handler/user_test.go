@@ -4,69 +4,81 @@ import (
 	"BookManagementApp/CacheDatabase"
 	"BookManagementApp/model"
 	"bytes"
-	"encoding/json"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
+func TestMain(m *testing.M) {
+	log.SetOutput(ioutil.Discard)
+	os.Exit(m.Run())
+}
+
 func TestInitialGetUser(t *testing.T) {
-	req, err := http.NewRequest("GET", "/getUsers", nil)
-	if err != nil {
-		t.Fatal(err)
+	testCases := map[string]struct {
+		statusCode int
+		function   func()
+	}{
+		"User Found": {
+			http.StatusOK,
+			func() {
+				CacheDatabase.Users = []model.User{{
+					ID:       1,
+					Name:     "",
+					Email:    "",
+					Password: "",
+					Books:    nil,
+				}}
+			},
+		},
+		"There is No User": {
+			http.StatusNotFound,
+			nil,
+		},
 	}
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(GetUser)
-	handler.ServeHTTP(rr, req)
-
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
-
-	expected := `No users found`
-	if rr.Body.String() != expected {
-		t.Errorf("handler returned unexpected body: got %v want %v",
-			rr.Body.String(), expected)
+	for tc, tp := range testCases {
+		if tp.function != nil {
+			tp.function()
+		}
+		req, _ := http.NewRequest(http.MethodGet, "/getUsers", nil)
+		q := req.URL.Query()
+		req.URL.RawQuery = q.Encode()
+		rec := httptest.NewRecorder()
+		handler := http.HandlerFunc(GetUsers)
+		handler.ServeHTTP(rec, req)
+		res := rec.Result()
+		if res.StatusCode != tp.statusCode {
+			t.Errorf("`%v` failed, got %v, expected %v", tc, res.StatusCode, tp.statusCode)
+		}
 	}
 }
 
 func TestCreateUser(t *testing.T) {
-	user := model.User{
-		ID:       0,
-		Name:     "",
-		Email:    "",
-		Password: "",
-		Books:    nil,
+	testCases := map[string]struct {
+		statusCode int
+		body       string
+	}{
+		"Proper Body": {
+			http.StatusOK,
+			`{"id":1,"name":"","email":"","password":"","books":[]}`,
+		},
+		"Empty Body": {
+			http.StatusBadRequest,
+			"",
+		},
 	}
-	body, err := json.Marshal(user)
-	if err != nil {
-		t.Fatal(err)
-	}
-	req, err := http.NewRequest(http.MethodPost, "/createUser", bytes.NewBuffer(body))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(CreateUser)
-	handler.ServeHTTP(rr, req)
-
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
-
-	// Check the response body is what we expect.
-	expected := `User created successfully`
-	if rr.Body.String() != expected {
-		t.Errorf("handler returned unexpected body: got %v want %v",
-			rr.Body.String(), expected)
-	}
-	expectedCount := 1
-	if len(CacheDatabase.Users) != expectedCount {
-		t.Errorf("handler returned unexpected body: got %v want %v",
-			rr.Body.String(), expected)
+	for tc, tp := range testCases {
+		req, _ := http.NewRequest(http.MethodPost, "/createUser", bytes.NewBufferString(tp.body))
+		rec := httptest.NewRecorder()
+		handler := http.HandlerFunc(CreateUser)
+		handler.ServeHTTP(rec, req)
+		res := rec.Result()
+		if res.StatusCode != tp.statusCode {
+			t.Errorf("`%v` failed, got %v, expected %v", tc, res.StatusCode, tp.statusCode)
+		}
 	}
 }
 
@@ -102,7 +114,7 @@ func TestUploadBookToUser(t *testing.T) {
 		PercentageOfRead: 0,
 	}}
 	for tc, tp := range testCases {
-		req, _ := http.NewRequest("GET", "/uploadBookToUser", nil)
+		req, _ := http.NewRequest(http.MethodGet, "/uploadBookToUser", nil)
 		q := req.URL.Query()
 		for k, v := range tp.params {
 			q.Add(k, v)

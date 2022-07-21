@@ -13,6 +13,13 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&book)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		helper.WriteToLogFile(err, 91024760, "Bad Body")
+
+		return
+	}
+	if book.Name == "" || book.Author == "" || book.Pages == 0 {
+		http.Error(w, "Invalid request", http.StatusBadRequest)
+		helper.WriteToLogFile(err, 91024760, "Bad Body")
 		return
 	}
 	_, err = json.Marshal(book)

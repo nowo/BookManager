@@ -9,12 +9,12 @@ import (
 	"strconv"
 )
 
-func GetUser(w http.ResponseWriter, r *http.Request) {
+func GetUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
 	if CacheDatabase.Users == nil {
+		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte("No users found"))
-		helper.WriteToLogFile(nil, 41233123, "GetUser request called when there is no user")
+		helper.WriteToLogFile(nil, 41233123, "GetUsers request called when there is no user")
 		return
 	}
 	response, err := json.Marshal(CacheDatabase.Users)
@@ -23,6 +23,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		helper.WriteToLogFile(nil, 34392714, "Error in marshaling the CacheDatabase User slice") // I made random number to make it unique
 		return
 	}
+	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }
 
@@ -30,13 +31,18 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	user := model.User{}
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		helper.WriteToLogFile(err, 80219016, "Error in decoding the request body")
+		return
+	}
+	if user.Name == "" || user.Email == "" || user.Password == "" {
+		http.Error(w, "Invalid request", http.StatusBadRequest)
 		helper.WriteToLogFile(err, 80219016, "Error in decoding the request body")
 		return
 	}
 	_, err = json.Marshal(user)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		helper.WriteToLogFile(err, 26193790, "Error in marshaling the user model")
 		return
 	}
@@ -84,5 +90,4 @@ func UploadBookToUser(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusNotFound)
 	w.Write([]byte("User couldnt added successfully to user"))
-
 }
