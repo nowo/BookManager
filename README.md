@@ -12,8 +12,8 @@ This project is a simple book manager app. It creates a book and a user. Then us
 ## Technologies
 Project is created with:
 * Go version: 1.18
-* default log package
-* testing package
+* Default log package
+* Testing package
 
 ## Setup
 To run this project, type `go run main.go` or go build. <br/>
