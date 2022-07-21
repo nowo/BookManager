@@ -5,3 +5,4 @@ import (
 )
 
 var Users []model.User
+var Books []model.Book

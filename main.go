@@ -8,8 +8,9 @@ import (
 
 func main() {
 	fmt.Println("Server started at port: 8080")
-	http.HandleFunc("/get", handler.GetUser)
-	http.HandleFunc("/create", handler.CreateUser)
+	http.HandleFunc("/getUsers", handler.GetUsers)
+	http.HandleFunc("/createUser", handler.CreateUser)
+	http.HandleFunc("/uploadBookToUser", handler.UploadBookToUser)
+	http.HandleFunc("/createBook", handler.CreateBook)
 	http.ListenAndServe(":8080", nil)
-
 }
