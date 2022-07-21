@@ -14,7 +14,7 @@ func TestCreateBook(t *testing.T) {
 	}{
 		"Proper Body": {
 			http.StatusOK,
-			`{"id":1,"name":"","author":"","pages":0,"percentageOfRead":0}`,
+			`{"id":1,"name":"test","author":"test","pages":1233,"percentageOfRead":0}`,
 		},
 		"Empty Body": {
 			http.StatusBadRequest,
@@ -24,7 +24,7 @@ func TestCreateBook(t *testing.T) {
 	for tc, tp := range testCases {
 		req, _ := http.NewRequest(http.MethodPost, "/createBook", bytes.NewBufferString(tp.body))
 		rec := httptest.NewRecorder()
-		handler := http.HandlerFunc(CreateUser)
+		handler := http.HandlerFunc(CreateBook)
 		handler.ServeHTTP(rec, req)
 		res := rec.Result()
 		if res.StatusCode != tp.statusCode {

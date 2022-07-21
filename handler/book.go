@@ -12,7 +12,7 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 	book := model.Book{}
 	err := json.NewDecoder(r.Body).Decode(&book)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		helper.WriteToLogFile(err, 91024760, "Bad Body")
 
 		return

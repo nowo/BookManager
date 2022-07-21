@@ -63,7 +63,7 @@ func TestCreateUser(t *testing.T) {
 	}{
 		"Proper Body": {
 			http.StatusOK,
-			`{"id":1,"name":"","email":"","password":"","books":[]}`,
+			`{"id":1,"name":"test","email":"test","password":"test","books":[]}`,
 		},
 		"Empty Body": {
 			http.StatusBadRequest,
@@ -101,16 +101,16 @@ func TestUploadBookToUser(t *testing.T) {
 	}
 	CacheDatabase.Users = []model.User{{
 		ID:       1,
-		Name:     "",
-		Email:    "",
-		Password: "",
+		Name:     "test",
+		Email:    "test",
+		Password: "test",
 		Books:    nil,
 	}}
 	CacheDatabase.Books = []model.Book{{
 		ID:               1,
-		Name:             "",
-		Author:           "",
-		Pages:            0,
+		Name:             "test",
+		Author:           "test",
+		Pages:            123,
 		PercentageOfRead: 0,
 	}}
 	for tc, tp := range testCases {
