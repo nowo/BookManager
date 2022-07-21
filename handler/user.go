@@ -51,8 +51,9 @@ func UploadBookToUser(w http.ResponseWriter, r *http.Request) {
 	bookID := r.URL.Query().Get("bookID")
 
 	if userID == "" || bookID == "" {
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Invalid request"))
-		helper.WriteToLogFile(nil, 334391114, "Invalid request")
+
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -74,11 +75,14 @@ func UploadBookToUser(w http.ResponseWriter, r *http.Request) {
 			for _, book := range CacheDatabase.Books {
 				if bookIDInt == book.ID {
 					user.Books = append(user.Books, book)
-					w.Write([]byte("Book added successfully"))
+					w.WriteHeader(http.StatusOK)
+					w.Write([]byte("Book added successfully to user"))
 					return
 				}
 			}
 		}
 	}
-	w.Write([]byte("User couldnt added successfully"))
+	w.WriteHeader(http.StatusNotFound)
+	w.Write([]byte("User couldnt added successfully to user"))
+
 }
