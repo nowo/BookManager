@@ -4,13 +4,18 @@ import (
 	"BookManagementApp/handler"
 	"fmt"
 	"net/http"
+	"os"
 )
 
 func main() {
-	fmt.Println("Server started at port: 8080")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "9000" // Default port if not specified
+	}
+	fmt.Println("Server running on port:", port)
 	http.HandleFunc("/getUsers", handler.GetUsers)
 	http.HandleFunc("/createUser", handler.CreateUser)
 	http.HandleFunc("/uploadBookToUser", handler.UploadBookToUser)
 	http.HandleFunc("/createBook", handler.CreateBook)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":"+port, nil)
 }
