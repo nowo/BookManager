@@ -8,6 +8,7 @@
 
 ## General info
 This project is a simple book manager app. It creates a book and a user. Then user can initiate a book and add it to his/her collection.
+This app deployed to heroku with this url : https://bookmanageapp1.herokuapp.com/
 
 ## Technologies
 Project is created with:
