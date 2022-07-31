@@ -10,7 +10,7 @@ import (
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "9000" // Default port if not specified
+		port = "8080" // Default port if not specified
 	}
 	fmt.Println("Server running on port:", port)
 	http.Handle("/", http.FileServer(http.Dir("./static")))
