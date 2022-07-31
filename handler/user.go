@@ -20,7 +20,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	response, err := json.Marshal(CacheDatabase.Users)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Fatal(err.Error())
+		log.Println(err.Error())
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -32,7 +32,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		//log.Fatal(err.Error())
+		log.Println(err.Error())
 		return
 	}
 	if user.Name == "" || user.Email == "" || user.Password == "" {
@@ -42,7 +42,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	_, err = json.Marshal(user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		//log.Fatal(err.Error())
+		log.Println(err.Error())
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -69,25 +69,28 @@ func UploadBookToUser(w http.ResponseWriter, r *http.Request) {
 	userIDInt, err := strconv.Atoi(userID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Fatal(err.Error())
+		log.Println(err.Error())
 		return
 	}
 	bookIDInt, err := strconv.Atoi(bookID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Fatal(err.Error())
+		log.Println(err.Error())
 		return
 	}
 
 	user, err := CacheDatabase.GetUsersIndex(userIDInt)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
+		log.Println(err.Error())
 		return
 	}
 
 	book, err := CacheDatabase.GetBook(bookIDInt)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
+		log.Println(err.Error())
+
 		return
 	}
 	AddBook(user, book)
