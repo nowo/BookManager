@@ -4,18 +4,10 @@ import (
 	"BookManagementApp/CacheDatabase"
 	"BookManagementApp/model"
 	"bytes"
-	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 )
-
-func TestMain(m *testing.M) {
-	log.SetOutput(ioutil.Discard)
-	os.Exit(m.Run())
-}
 
 func TestInitialGetUser(t *testing.T) {
 	testCases := map[string]struct {
