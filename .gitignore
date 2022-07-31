@@ -15,7 +15,7 @@
 *.out
 
 # Standard output and error of the go tool
-*.log
+#*.log
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
